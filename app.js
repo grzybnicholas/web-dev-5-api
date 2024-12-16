@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 mongoose.connect(
-    'mongodb+srv://grzybnicholas:aQ1CnMMpi8weqC3T@webdevhw5.tdlno.mongodb.net/?retryWrites=true&w=majority',
+    'mongodb+srv://grzybnicholas:aQ1CnMMpi8weqC3T@webdevhw5.tdlno.mongodb.net/test?retryWrites=true&w=majority',
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
