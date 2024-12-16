@@ -9,7 +9,16 @@ app.use(cors());
 app.use(express.json());
 
 
-mongoose.connect('mongodb+srv://grzybnicholas:aQ1CnMMpi8weqC3T@webdevhw5.tdlno.mongodb.net/?retryWrites=true&w=majority&appName=webdevhw5' );
+mongoose.connect(
+    'mongodb+srv://grzybnicholas:aQ1CnMMpi8weqC3T@webdevhw5.tdlno.mongodb.net/?retryWrites=true&w=majority',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, 
+      socketTimeoutMS: 45000, 
+    }
+  );
+  
 
 const taskSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -34,6 +43,7 @@ app.get('/api/tasks', async (req, res) => {
     const tasks = await Task.find();
     res.status(200).json(tasks);
   } catch (error) {
+    console.error('Error fetching tasks:', error);
     res.status(500).json({ error: error.message });
   }
 });
