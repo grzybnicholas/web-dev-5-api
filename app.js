@@ -4,7 +4,6 @@ const cors = require('cors');
 
 const app = express();
 
-
 app.use(cors());
 app.use(express.json());
 
@@ -17,19 +16,40 @@ mongoose.connect(
       serverSelectionTimeoutMS: 5000, 
       socketTimeoutMS: 45000, 
     }
-  );
-  
+);
+
+
+const counterSchema = new mongoose.Schema({
+  model: String,
+  count: { type: Number, default: 0 },
+});
+
+const Counter = mongoose.model('Counter', counterSchema);
+
 
 const taskSchema = new mongoose.Schema({
+  _id: { type: Number },
   title: { type: String, required: true },
   completed: { type: Boolean, default: false },
 });
 
 const Task = mongoose.model('Task', taskSchema);
 
+
+const getNextId = async (model) => {
+  const counter = await Counter.findOneAndUpdate(
+    { model },
+    { $inc: { count: 1 } },
+    { new: true, upsert: true }
+  );
+  return counter.count;
+};
+
+
 app.post('/api/tasks', async (req, res) => {
   try {
-    const task = new Task(req.body);
+    const nextId = await getNextId('Task');
+    const task = new Task({ _id: nextId, ...req.body });
     await task.save();
     res.status(201).json(task);
   } catch (error) {
@@ -75,4 +95,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
