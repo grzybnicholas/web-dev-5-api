@@ -57,6 +57,18 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
+app.get('/api/tasks/:id', async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ error: 'Invalid Task ID' });
+  }
+});
+
 
 app.get('/api/tasks', async (req, res) => {
   try {
